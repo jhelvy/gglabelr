@@ -9,6 +9,8 @@
 
 Interactively add a label to a ggplot. Define the label on the left, then copy the code to add the label and add it to your ggplot.
 
+For now, this only works as a demo with a given plot. In the future, I'd like to extend this to be a library / RStudio plugin that works with any ggplot object you give it.
+
 ### Run locally
 
 To run the app locally on your computer by following these steps:
