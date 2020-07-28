@@ -3,8 +3,13 @@ library(ggplot2)
 library(shinythemes)
 library(rclipboard)
 
+# -----------------------------------------------------------------------------
+# Define plot here as object p
+
 p <- ggplot(mpg, aes(x = hwy, y = displ)) +
     geom_point()
+
+# -----------------------------------------------------------------------------
 
 ui <- navbarPage(title = "gglabelr",
     theme = shinytheme("united"),
