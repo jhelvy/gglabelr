@@ -27,28 +27,29 @@ gglabelr <- function(p) {
                 miniUI::miniContentPanel(
                     shiny::actionButton(
                         inputId = "label_reset",
-                        label = "Remove label"),
+                        label   = "Remove label"),
                     shiny::br(),shiny::br(),
                     shiny::HTML("<b>Click where you want the label:</b>"),
                     shiny::plotOutput(
                         outputId = "label_plot",
-                        click = "label_plot_click"
+                        click    = "label_plot_click"
                     ),
                     shiny::textInput(
                         inputId = "label_text",
-                        label = "Label text:",
-                        value = "Hello World!"),
+                        label   = "Label text:",
+                        value   = "Hello World!"),
                     shiny::fillRow(
                         shiny::radioButtons(
-                            inputId = "label_hjust",
-                            label = "Label justification:",
-                            choices = c("Left", "Center", "Right"),
-                            inline = TRUE,
+                            inputId  = "label_hjust",
+                            label    = "Label justification:",
+                            choices  = c("Left", "Center", "Right"),
+                            inline   = TRUE,
                             selected = "Left"),
                         shiny::numericInput(
                             inputId = "label_size",
-                            label = "Label size:",
-                            value = 6)
+                            label   = "Label size:",
+                            step    = 0.5,
+                            value   = 6)
                     )
                 )
             ),
@@ -57,7 +58,7 @@ gglabelr <- function(p) {
                 miniUI::miniContentPanel(
                     shiny::actionButton(
                         inputId = "box_reset",
-                        label = "Remove box"),
+                        label   = "Remove box"),
                     shiny::br(),shiny::br(),
                     shiny::HTML("<b>Click and drag to draw the box:</b>"),
                     shiny::plotOutput(
@@ -68,8 +69,8 @@ gglabelr <- function(p) {
                     shiny::fillRow(
                         colourpicker::colourInput(
                             inputId = "box_fill",
-                            label = "Select fill color",
-                            value = "#8C8C8C",
+                            label   = "Select fill color",
+                            value   = "#8C8C8C",
                             allowTransparent = TRUE),
                         shiny::sliderInput(
                             inputId = 'box_opacity',
@@ -96,6 +97,8 @@ gglabelr <- function(p) {
     )
 
     server <- function(input, output, session) {
+
+        # Code for getting the coordinate values for annotations --------------
 
         # Reactive clicking issue solved here:
         # https://stackoverflow.com/questions/49351533/how-to-display-plot-clicks-on-a-plot-in-shiny
@@ -128,6 +131,8 @@ gglabelr <- function(p) {
             coords$box_ymax <- NULL
         })
 
+        # Code for making the plots to show -----------------------------------
+
         get_label_hjust <- function(e) {
             if (e == "Left")   { return(0) }
             if (e == "Center") { return(0.5) }
@@ -135,9 +140,9 @@ gglabelr <- function(p) {
             return(0)
         }
 
-        label_data <- shiny::reactive({
+        get_label_data <- shiny::reactive({
             return(list(
-                text   = input$label_text,
+                label  = input$label_text,
                 size   = input$label_size,
                 hjust  = get_label_hjust(input$label_hjust)))
         })
@@ -158,21 +163,21 @@ gglabelr <- function(p) {
             if (label_missing & box_missing) {
                 return(p)
             } else if (box_missing) {
-                return(p + makePlotLabel())
+                return(p + makeLabel())
             } else if (label_missing) {
-                return(p + makePlotBox())
+                return(p + makeBoxmakeBox())
             }
-            return(p + makePlotLabel() + makePlotBox())
+            return(p + makeLabel() + makeBox())
         }
 
-        makePlotLabel <- function() {
-            d <- label_data()
-            return(geom_text(
-                aes(x = coords$label_x, y = coords$label_y, label = d$text),
+        makeLabel <- function() {
+            d <- get_label_data()
+            return(annotate(geom = "text",
+                x = coords$label_x, y = coords$label_y, label = d$label,
                 size = d$size, hjust = d$hjust))
         }
 
-        makePlotBox <- function() {
+        makeBox <- function() {
             return(annotate(geom = "rect",
                 xmin = coords$box_xmin, xmax = coords$box_xmax,
                 ymin = coords$box_ymin, ymax = coords$box_ymax,
@@ -187,26 +192,29 @@ gglabelr <- function(p) {
             makePlot()
         })
 
+        # Code for making the code to copy ------------------------------------
+
         get_label_code <- function() {
             if (is.null(coords$label_x)) { return(NULL) }
-            d <- label_data()
+            d <- get_label_data()
             return(paste0(
-                'geom_text(aes(x = ', coords$label_x, ', ',
-                "y = ", coords$label_y, ', ',
-                'label = "', d$text, '"),\n\t',
-                "size = ", d$size, ', ',
-                "hjust = ", d$hjust, ')\n'))
+                'annotate(geom = "text",\n\t',
+                'x = ', coords$label_x, ', ',
+                'y = ', coords$label_y, ', ',
+                'label = "', d$label, '",\n\t',
+                'size = ', d$size, ', ',
+                'hjust = ', d$hjust, ')\n'))
         }
 
         get_box_code <- function() {
             if (is.null(coords$box_xmin)) { return(NULL) }
             return(paste0(
-                'annotate(geom = "rect",\n',
-                '\txmin = ', coords$box_xmin, ', ',
-                'xmax = ', coords$box_xmax, ',\n',
-                '\tymin = ', coords$box_ymin, ', ',
-                'ymax = ', coords$box_ymax, ',\n',
-                '\tfill = "', input$box_fill, '", ',
+                'annotate(geom = "rect",\n\t',
+                'xmin = ', coords$box_xmin, ', ',
+                'xmax = ', coords$box_xmax, ',\n\t',
+                'ymin = ', coords$box_ymin, ', ',
+                'ymax = ', coords$box_ymax, ',\n\t',
+                'fill = "', input$box_fill, '", ',
                 'alpha = ', input$box_opacity, ')\n'))
         }
 
