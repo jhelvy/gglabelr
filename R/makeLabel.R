@@ -1,4 +1,4 @@
-#' Interactively insert a label to a ggplot.
+#' Interactively make a label for a ggplot.
 #'
 #' When called, this function opens a window with options to interactively
 #' add a label to the ggplot. When you press the "done" button, the code
@@ -13,9 +13,9 @@
 #' p <- ggplot(mpg, aes(x = hwy, y = displ)) +
 #'     geom_point()
 #'
-#' # Interactively insert a label
-#' insertLabel(p)
-insertLabel <- function(p) {
+#' # Interactively make a label
+#' makeLabel(p)
+makeLabel <- function(p) {
 
     ui <- miniUI::miniPage(
         miniUI::gadgetTitleBar("gglabelr"),
@@ -67,15 +67,6 @@ insertLabel <- function(p) {
             return(0)
         }
 
-        print_label_code <- shiny::reactive({
-            d <- label_data()
-            cat(paste0(
-                "geom_text(aes(x = ", coords$x, ", y = ", coords$y,
-                ", label = ", '"', d$text, '"),\n',
-                "\tsize = ", d$size,
-                ", hjust = ", d$hjust, ')\n'))
-        })
-
         output$plot <- shiny::renderPlot({
             d <- label_data()
             if (is.null(coords$x)) {
@@ -88,12 +79,22 @@ insertLabel <- function(p) {
             }
         })
 
+        print_label_code <- shiny::reactive({
+            d <- label_data()
+            cat(paste0(
+                "geom_text(aes(x = ", coords$x, ", y = ", coords$y,
+                ", label = ", '"', d$text, '"),\n',
+                "\tsize = ", d$size,
+                ", hjust = ", d$hjust, ')\n'))
+        })
+
         shiny::observeEvent(input$done, {
             print_label_code()
             shiny::stopApp()
         })
     }
 
-    shiny::runGadget(ui, server, viewer = shiny::dialogViewer("gglabelr"))
+    shiny::runGadget(
+        ui, server, viewer = shiny::dialogViewer("gglabelr::makeLabel()"))
 
 }

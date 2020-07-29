@@ -5,5 +5,8 @@ library(ggplot2)
 p <- ggplot(mpg, aes(x = hwy, y = displ)) +
     geom_point()
 
-# Interactively insert a label
-insertLabel(p)
+# Interactively make a label
+makeLabel(p)
+
+# Interactively make a box
+makeBox(p)
