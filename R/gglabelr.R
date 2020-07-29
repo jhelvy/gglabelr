@@ -142,28 +142,37 @@ gglabelr <- function(p) {
 
         output$label_plot <- shiny::renderPlot({
             if (is.null(coords$label_x)) {
-                return(p)
+                plot <- p
             } else {
-                d <- label_data()
-                return(p +
-                geom_text(aes(x = coords$label_x, 
-                              y = coords$label_y,
-                              label = d$text),
-                          size = d$size, hjust = d$hjust))
+                plot <- p + makePlotLabel()
             }
+            return(plot)
         })
 
         output$box_plot <- shiny::renderPlot({
             if (is.null(coords$box_xmin)) {
-                return(p)
+                plot <- p
             } else {
-                return(p +
-                annotate(geom = "rect",
-                         xmin = coords$box_xmin, xmax = coords$box_xmax,
-                         ymin = coords$box_ymin, ymax = coords$box_ymax,
-                         fill = input$box_fill, alpha = input$box_opacity))
+                plot <- p + makePlotBox()
             }
+            return(plot)
         })
+
+        makePlotLabel <- function() {
+            d <- label_data()
+            return(geom_text(aes(x = coords$label_x, 
+                          y = coords$label_y,
+                          label = d$text),
+                      size = d$size, hjust = d$hjust))
+        }
+        
+        makePlotBox <- function() {
+            return(annotate(
+                geom = "rect",
+                xmin = coords$box_xmin, xmax = coords$box_xmax,
+                ymin = coords$box_ymin, ymax = coords$box_ymax,
+                fill = input$box_fill, alpha = input$box_opacity))
+        }
         
         get_label_code <- function() {
             if (is.null(coords$label_x)) { return(NULL) }
