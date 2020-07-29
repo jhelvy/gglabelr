@@ -5,7 +5,10 @@
 <i class="fa fa-github fa-lg"></i></a>
 <a href="https://shiny.rstudio.com/" target="_blank">Built with <img alt="Shiny" src="https://www.rstudio.com/wp-content/uploads/2014/04/shiny.png" height="20"></a>
 
-Interactively add annotations to a ggplot.
+A shiny gadget that helps you interactively annotate a ggplot:
+
+- Add a label
+- Draw a box
 
 ## Installation
 
