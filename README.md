@@ -5,26 +5,4 @@
 <i class="fa fa-github fa-lg"></i></a>
 <a href="https://shiny.rstudio.com/" target="_blank">Built with <img alt="Shiny" src="https://www.rstudio.com/wp-content/uploads/2014/04/shiny.png" height="20"></a>
 
-### Overview
-
-Interactively add a label to a ggplot. Define the label on the left, then copy the code to add the label and add it to your ggplot.
-
-For now, this only works as a demo with a given plot. In the future, I'd like to extend this to be a library / RStudio plugin that works with any ggplot object you give it.
-
-### Run locally
-
-To run the app locally on your computer by following these steps:
-
-1. Install [R](https://cloud.r-project.org/)
-2. Run this code in R to install the [shiny library](https://shiny.rstudio.com/):
-
-```
-install.packages("shiny")
-```
-
-3. Run this code in R to launch the app:
-
-```
-library(shiny)
-runGitHub('jhelvy/gglabelr')
-```
+RStudio addin to interactively insert a label to a ggplot. Use the `insertLabel()` function to interactively insert a label to the ggplot. When you press the "done" button, the code, to create the label will be printed to the console.

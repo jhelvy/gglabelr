@@ -1,28 +1,41 @@
-library(shiny)
-library(miniUI)
-library(ggplot2)
+#' Interactively insert a label to a ggplot.
+#'
+#' When called, this function opens a window with options to interactively
+#' add a label to the ggplot. When you press the "done" button, the code
+#' to create the label will be printed to the console.
+#'
+#' @export
+#' @examples
+#' library(gglabelr)
+#' library(ggplot2)
+#'
+#' # Make plot
+#' p <- ggplot(mpg, aes(x = hwy, y = displ)) +
+#'     geom_point()
+#'
+#' # Interactively insert a label
+#' insertLabel(p)
+insertLabel <- function(p) {
 
-makeLabel <- function(p) {
-
-    ui <- miniPage(
-        gadgetTitleBar("gglabelr"),
-        miniContentPanel(
-            textInput(
+    ui <- miniUI::miniPage(
+        miniUI::gadgetTitleBar("gglabelr"),
+        miniUI::miniContentPanel(
+            shiny::textInput(
                 inputId = "label_text",
                 label = "Label text:",
                 value = "Hello World!"),
-            numericInput(
+            shiny::numericInput(
                 inputId = "label_size",
                 label = "Label size:",
                 value = 6),
-            radioButtons(
+            shiny::radioButtons(
                 inputId = "label_hjust",
                 label = "Label justification:",
                 choices = c("Left", "Center", "Right"),
                 inline = TRUE,
                 selected = "Left"),
-            HTML("<b>Click where you want the label:</b>"),
-            plotOutput(
+            shiny::HTML("<b>Click where you want the label:</b>"),
+            shiny::plotOutput(
                 outputId = "plot",
                 click = "plot_click"
             )
@@ -30,17 +43,17 @@ makeLabel <- function(p) {
     )
 
     server <- function(input, output, session) {
-        
-        # Reactive clicking issue solved here: 
-        # https://stackoverflow.com/questions/49351533/how-to-display-plot-clicks-on-a-plot-in-shiny
-        coords <- reactiveValues(x = NULL, y = NULL)
 
-        observeEvent(input$plot_click, {
+        # Reactive clicking issue solved here:
+        # https://stackoverflow.com/questions/49351533/how-to-display-plot-clicks-on-a-plot-in-shiny
+        coords <- shiny::reactiveValues(x = NULL, y = NULL)
+
+        shiny::observeEvent(input$plot_click, {
             coords$x <- round(input$plot_click$x, 1)
             coords$y <- round(input$plot_click$y, 1)
         })
-        
-        label_data <- reactive({
+
+        label_data <- shiny::reactive({
             return(list(
                 text   = input$label_text,
                 size   = input$label_size,
@@ -54,7 +67,7 @@ makeLabel <- function(p) {
             return(0)
         }
 
-        print_label_code <- reactive({
+        print_label_code <- shiny::reactive({
             d <- label_data()
             cat(paste0(
                 "geom_text(aes(x = ", coords$x, ", y = ", coords$y,
@@ -63,11 +76,11 @@ makeLabel <- function(p) {
                 ", hjust = ", d$hjust, ')\n'))
         })
 
-        output$plot <- renderPlot({
+        output$plot <- shiny::renderPlot({
             d <- label_data()
             if (is.null(coords$x)) {
                 p
-            } else { 
+            } else {
                 p +
                 geom_text(aes(x = coords$x, y = coords$y,
                               label = d$text),
@@ -75,12 +88,12 @@ makeLabel <- function(p) {
             }
         })
 
-        observeEvent(input$done, {
+        shiny::observeEvent(input$done, {
             print_label_code()
-            stopApp()
+            shiny::stopApp()
         })
     }
 
-    runGadget(ui, server, viewer = dialogViewer("gglabelr"))
+    shiny::runGadget(ui, server, viewer = dialogViewer("gglabelr"))
 
 }
