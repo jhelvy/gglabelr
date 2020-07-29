@@ -94,6 +94,6 @@ insertLabel <- function(p) {
         })
     }
 
-    shiny::runGadget(ui, server, viewer = dialogViewer("gglabelr"))
+    shiny::runGadget(ui, server, viewer = shiny::dialogViewer("gglabelr"))
 
 }
