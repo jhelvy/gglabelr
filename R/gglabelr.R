@@ -23,53 +23,63 @@ gglabelr <- function(p) {
             miniTabPanel(
                 title = "Make a label", icon = icon("tag"),
                 miniUI::miniContentPanel(
-                    shiny::textInput(
-                        inputId = "label_text",
-                        label = "Label text:",
-                        value = "Hello World!"),
-                    shiny::numericInput(
-                        inputId = "label_size",
-                        label = "Label size:",
-                        value = 6),
-                    shiny::radioButtons(
-                        inputId = "label_hjust",
-                        label = "Label justification:",
-                        choices = c("Left", "Center", "Right"),
-                        inline = TRUE,
-                        selected = "Left"),
                     shiny::HTML("<b>Click where you want the label:</b>"),
                     shiny::plotOutput(
                         outputId = "label_plot",
                         click = "label_plot_click"
                     ),
-                    shiny::HTML("<b>Code to make label:</b>"),
-                    verbatimTextOutput(outputId = "label_code")
+                    shiny::textInput(
+                        inputId = "label_text",
+                        label = "Label text:",
+                        value = "Hello World!"),
+                    fillRow(
+                        shiny::radioButtons(
+                            inputId = "label_hjust",
+                            label = "Label justification:",
+                            choices = c("Left", "Center", "Right"),
+                            inline = TRUE,
+                            selected = "Left"),
+                        shiny::numericInput(
+                            inputId = "label_size",
+                            label = "Label size:",
+                            value = 6)
+                    )
                 )
             ),
             miniTabPanel(
                 title = "Draw a box", icon = icon("vector-square"),
                 miniUI::miniContentPanel(
-                    shiny::sliderInput(
-                        inputId = 'box_opacity',
-                        label   = 'Box opacity (0 = lighter, 1 = darker):',
-                        min     = 0,
-                        max     = 1,
-                        value   = 0.25,
-                        step    = 0.05
-                    ),
-                    colourInput(
-                        inputId = "box_fill", 
-                        label = "Select fill color", 
-                        value = "grey55", 
-                        allowTransparent = TRUE),
                     shiny::HTML("<b>Click and drag to draw the box:</b>"),
                     shiny::plotOutput(
                         outputId = "box_plot",
                         brush = shiny::brushOpts(
                             id = "box_plot_brush", resetOnNew = TRUE)
                     ),
-                    shiny::HTML("<b>Code to make box:</b>"),
-                    verbatimTextOutput(outputId = "box_code")
+                    fillRow(
+                        colourInput(
+                            inputId = "box_fill", 
+                            label = "Select fill color", 
+                            value = "#8C8C8C", 
+                            allowTransparent = TRUE),
+                        shiny::sliderInput(
+                            inputId = 'box_opacity',
+                            label   = 'Box opacity (0 = lighter, 1 = darker):',
+                            min     = 0,
+                            max     = 1,
+                            value   = 0.25,
+                            step    = 0.05
+                        )
+                    )
+                )
+            ),
+            miniTabPanel(
+                title = "Get the code", icon = icon("code"),
+                miniUI::miniContentPanel(
+                    actionButton(
+                        inputId = "copyCode", 
+                        label = "Copy code to clipboard"),
+                    br(),br(),
+                    verbatimTextOutput(outputId = "code")
                 )
             )
         )
@@ -95,13 +105,6 @@ gglabelr <- function(p) {
             coords$box_ymin <- round(input$box_plot_brush$ymin, 1)
             coords$box_ymax <- round(input$box_plot_brush$ymax, 1)
         })
-        
-        label_data <- shiny::reactive({
-            return(list(
-                text   = input$label_text,
-                size   = input$label_size,
-                hjust  = get_label_hjust(input$label_hjust)))
-        })
 
         get_label_hjust <- function(e) {
             if (e == "Left")   { return(0) }
@@ -109,6 +112,13 @@ gglabelr <- function(p) {
             if (e == "Right")  { return(1) }
             return(0)
         }
+        
+        label_data <- shiny::reactive({
+            return(list(
+                text   = input$label_text,
+                size   = input$label_size,
+                hjust  = get_label_hjust(input$label_hjust)))
+        })
 
         output$label_plot <- shiny::renderPlot({
             if (is.null(coords$label_x)) {
@@ -158,24 +168,35 @@ gglabelr <- function(p) {
                 'alpha = ', input$box_opacity, ')\n'))
         }
         
-        output$label_code <- renderText({
-            get_label_code()
+        get_all_code <- function() {
+            code <- NULL
+            if (!is.null(coords$label_x)) {
+                code <- paste0(
+                    code, 
+                    "# Code to make the label:\n",
+                    get_label_code(),
+                    "\n")
+            }
+            if (!is.null(coords$box_xmin)) {
+                code <- paste0(
+                    code,
+                    "# Code to make the box:\n",
+                    get_box_code(),
+                    "\n")    
+            }
+            return(code)
+        }
+        
+        observeEvent(input$copyCode, {
+            clipr::write_clip(get_all_code())
         })
         
-        output$box_code <- renderText({
-            get_box_code()
+        output$code <- renderText({
+            return(get_all_code())
         })
         
         shiny::observeEvent(input$done, {
-            if (!is.null(coords$label_x)) { 
-                cat("# Code to make label:\n\n")
-                cat(get_label_code())
-                cat("\n")
-            }
-            if (!is.null(coords$box_xmin)) {
-                cat("# Code to make box:\n\n")
-                cat(get_box_code())    
-            }
+            cat(get_all_code())
             shiny::stopApp()
         })
     }
