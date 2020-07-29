@@ -25,20 +25,21 @@ gglabelr <- function(p) {
             miniUI::miniTabPanel(
                 title = "Add a label", icon = shiny::icon("tag"),
                 miniUI::miniContentPanel(
-                    shiny::actionButton(
-                        inputId = "label_reset",
-                        label   = "Remove label"),
-                    shiny::br(),shiny::br(),
-                    shiny::HTML("<b>Click where you want the label:</b>"),
-                    shiny::plotOutput(
-                        outputId = "label_plot",
-                        click    = "label_plot_click"
-                    ),
-                    shiny::textInput(
-                        inputId = "label_text",
-                        label   = "Label text:",
-                        value   = "Hello World!"),
-                    shiny::fillRow(
+                    shiny::wellPanel(
+                        shiny::HTML("<b>Click where you want the label:</b><br><br>"),
+                        shiny::plotOutput(
+                            outputId = "label_plot",
+                            click    = "label_plot_click"
+                        ),
+                        shiny::HTML("<br>"), 
+                        shiny::actionButton(
+                            inputId = "label_reset",
+                            label   = "Remove label"),
+                        shiny::HTML("<br><br>"),
+                        shiny::textInput(
+                            inputId = "label_text",
+                            label   = "Label text:",
+                            value   = "Hello World!"),
                         shiny::radioButtons(
                             inputId  = "label_hjust",
                             label    = "Label justification:",
@@ -56,20 +57,23 @@ gglabelr <- function(p) {
             miniUI::miniTabPanel(
                 title = "Draw a box", icon = shiny::icon("vector-square"),
                 miniUI::miniContentPanel(
-                    shiny::actionButton(
-                        inputId = "box_reset",
-                        label   = "Remove box"),
-                    shiny::br(),shiny::br(),
-                    shiny::HTML("<b>Click and drag to draw the box:</b>"),
-                    shiny::plotOutput(
-                        outputId = "box_plot",
-                        brush = shiny::brushOpts(
-                            id = "box_plot_brush", resetOnNew = TRUE)
-                    ),
-                    shiny::fillRow(
+                    shiny::wellPanel(
+                        shiny::HTML("<b>Click and drag to draw the box:</b><br><br>"),
+                        shiny::plotOutput(
+                            outputId = "box_plot",
+                            brush = shiny::brushOpts(
+                                id = "box_plot_brush", 
+                                delay = 1000,
+                                resetOnNew = TRUE)
+                        ),
+                        shiny::HTML("<br>"), 
+                        shiny::actionButton(
+                            inputId = "box_reset",
+                            label   = "Remove box"),
+                        shiny::HTML("<br><br>"),
                         colourpicker::colourInput(
                             inputId = "box_fill",
-                            label   = "Select fill color",
+                            label   = "Select fill color:",
                             value   = "#8C8C8C",
                             allowTransparent = TRUE),
                         shiny::sliderInput(
