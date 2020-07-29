@@ -23,6 +23,10 @@ gglabelr <- function(p) {
             miniTabPanel(
                 title = "Make a label", icon = icon("tag"),
                 miniUI::miniContentPanel(
+                    actionButton(
+                        inputId = "label_reset",
+                        label = "Remove label"),
+                    br(),br(),
                     shiny::HTML("<b>Click where you want the label:</b>"),
                     shiny::plotOutput(
                         outputId = "label_plot",
@@ -49,6 +53,10 @@ gglabelr <- function(p) {
             miniTabPanel(
                 title = "Draw a box", icon = icon("vector-square"),
                 miniUI::miniContentPanel(
+                    actionButton(
+                        inputId = "box_reset",
+                        label = "Remove box"),
+                    br(),br(),
                     shiny::HTML("<b>Click and drag to draw the box:</b>"),
                     shiny::plotOutput(
                         outputId = "box_plot",
@@ -76,7 +84,7 @@ gglabelr <- function(p) {
                 title = "Get the code", icon = icon("code"),
                 miniUI::miniContentPanel(
                     actionButton(
-                        inputId = "copyCode", 
+                        inputId = "copy_code", 
                         label = "Copy code to clipboard"),
                     br(),br(),
                     verbatimTextOutput(outputId = "code")
@@ -104,6 +112,18 @@ gglabelr <- function(p) {
             coords$box_xmax <- round(input$box_plot_brush$xmax, 1)
             coords$box_ymin <- round(input$box_plot_brush$ymin, 1)
             coords$box_ymax <- round(input$box_plot_brush$ymax, 1)
+        })
+
+        observeEvent(input$label_reset, {
+            coords$label_x <- NULL
+            coords$label_y <- NULL
+        })
+        
+        observeEvent(input$box_reset, {
+            coords$box_xmin <- NULL
+            coords$box_xmax <- NULL
+            coords$box_ymin <- NULL
+            coords$box_ymax <- NULL
         })
 
         get_label_hjust <- function(e) {
@@ -187,7 +207,7 @@ gglabelr <- function(p) {
             return(code)
         }
         
-        observeEvent(input$copyCode, {
+        observeEvent(input$copy_code, {
             clipr::write_clip(get_all_code())
         })
         
