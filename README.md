@@ -5,14 +5,14 @@
 <i class="fa fa-github fa-lg"></i></a>
 <a href="https://shiny.rstudio.com/" target="_blank">Built with <img alt="Shiny" src="https://www.rstudio.com/wp-content/uploads/2014/04/shiny.png" height="20"></a>
 
-A shiny gadget that helps you interactively annotate a ggplot:
+A shiny gadget that helps you interactively annotate a ggplot. Currently supports:
 
-- Add a label
-- Draw a box
+- Adding a label
+- Drawing a box
 
 ## Installation
 
-Currently you can only install the development version of the package via GitHub:
+You can install the development version of the package via GitHub:
 ```
 devtools::install_github('jhelvy/gglabelr')
 ```
@@ -29,16 +29,10 @@ p <- ggplot(mpg, aes(x = hwy, y = displ)) +
     geom_point()
 ```
 
-Use the `makeLabel()` function to interactively add a label to the plot:
+Use the `gglabelr()` function to interactively annotate the plot:
 
 ```
-makeLabel(p)
+gglabelr(p)
 ```
 
-Use the `makeBox()` function to interactively add a box to the plot:
-
-```
-makeBox(p)
-```
-
-After you press the "done" button, the window will close and the code to create the label or box will print to the console.
+Copy the code to produce the annotations in the "Get the code" tab. The code will also print to the console when you close the app by pressing the "done" button.
