@@ -25,32 +25,37 @@ gglabelr <- function(p) {
             miniUI::miniTabPanel(
                 title = "Add a label", icon = shiny::icon("tag"),
                 miniUI::miniContentPanel(
-                    shiny::wellPanel(
-                        shiny::HTML("<b>Click where you want the label:</b><br><br>"),
-                        shiny::plotOutput(
-                            outputId = "label_plot",
-                            click    = "label_plot_click"
+                    shiny::fillRow(
+                        shiny::wellPanel(
+                            shiny::HTML("<br>"), 
+                            shiny::actionButton(
+                                inputId = "label_reset",
+                                label   = "Remove label"),
+                            shiny::HTML("<br><br>"),
+                            shiny::textInput(
+                                inputId = "label_text",
+                                label   = "Label text:",
+                                value   = "Hello World!"),
+                            shiny::radioButtons(
+                                inputId  = "label_hjust",
+                                label    = "Label justification:",
+                                choices  = c("Left", "Center", "Right"),
+                                inline   = TRUE,
+                                selected = "Left"),
+                            shiny::numericInput(
+                                inputId = "label_size",
+                                label   = "Label size:",
+                                step    = 0.5,
+                                value   = 6, 
+                                width   = '100px')
                         ),
-                        shiny::HTML("<br>"), 
-                        shiny::actionButton(
-                            inputId = "label_reset",
-                            label   = "Remove label"),
-                        shiny::HTML("<br><br>"),
-                        shiny::textInput(
-                            inputId = "label_text",
-                            label   = "Label text:",
-                            value   = "Hello World!"),
-                        shiny::radioButtons(
-                            inputId  = "label_hjust",
-                            label    = "Label justification:",
-                            choices  = c("Left", "Center", "Right"),
-                            inline   = TRUE,
-                            selected = "Left"),
-                        shiny::numericInput(
-                            inputId = "label_size",
-                            label   = "Label size:",
-                            step    = 0.5,
-                            value   = 6)
+                        shiny::wellPanel(
+                            shiny::HTML("<b>Click where you want the label:</b><br><br>"),
+                            shiny::plotOutput(
+                                outputId = "label_plot",
+                                click    = "label_plot_click"
+                            )
+                        )
                     )
                 )
             ),
@@ -64,8 +69,7 @@ gglabelr <- function(p) {
                             brush = shiny::brushOpts(
                                 id = "box_plot_brush", 
                                 delay = 1000,
-                                resetOnNew = TRUE)
-                        ),
+                                resetOnNew = TRUE)),
                         shiny::HTML("<br>"), 
                         shiny::actionButton(
                             inputId = "box_reset",
@@ -74,7 +78,7 @@ gglabelr <- function(p) {
                         colourpicker::colourInput(
                             inputId = "box_fill",
                             label   = "Select fill color:",
-                            value   = "#8C8C8C",
+                            value   = "#8C8C8C", 
                             allowTransparent = TRUE),
                         shiny::sliderInput(
                             inputId = 'box_opacity',
@@ -82,8 +86,8 @@ gglabelr <- function(p) {
                             min     = 0,
                             max     = 1,
                             value   = 0.25,
-                            step    = 0.05
-                        )
+                            step    = 0.05, 
+                            width   = '300px')
                     )
                 )
             ),
@@ -169,7 +173,7 @@ gglabelr <- function(p) {
             } else if (box_missing) {
                 return(p + makeLabel())
             } else if (label_missing) {
-                return(p + makeBoxmakeBox())
+                return(p + makeBox())
             }
             return(p + makeLabel() + makeBox())
         }
@@ -256,5 +260,7 @@ gglabelr <- function(p) {
     }
 
     shiny::runGadget(
-        ui, server, viewer = shiny::dialogViewer("gglabelr"))
+        # ui, server, viewer = shiny::dialogViewer("gglabelr"))
+        ui, server, viewer = shiny::browserViewer())
+        
 }
