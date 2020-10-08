@@ -10,6 +10,8 @@ A shiny gadget that helps you interactively annotate a ggplot. Currently support
 - Adding a label
 - Drawing a box
 
+<img src="images/preview.gif" width=660>
+
 ## Installation
 
 You can install the development version of the package via GitHub:
