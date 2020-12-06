@@ -6,6 +6,7 @@
 #' the "done" button, the code to generate the annotations will be printed
 #' to the console.
 #'
+#' @param p A ggplot object.
 #' @export
 #' @examples
 #' library(gglabelr)
@@ -46,7 +47,7 @@ gglabelr <- function(p) {
                                 inputId = "label_size",
                                 label   = "Label size:",
                                 step    = 0.5,
-                                value   = 6, 
+                                value   = 6,
                                 width   = '100px')
                         ),
                         shiny::column(
@@ -72,7 +73,7 @@ gglabelr <- function(p) {
                             colourpicker::colourInput(
                                 inputId = "box_fill",
                                 label   = "Select fill color:",
-                                value   = "#8C8C8C", 
+                                value   = "#8C8C8C",
                                 allowTransparent = TRUE),
                             shiny::sliderInput(
                                 inputId = 'box_opacity',
@@ -80,16 +81,16 @@ gglabelr <- function(p) {
                                 min     = 0,
                                 max     = 1,
                                 value   = 0.25,
-                                step    = 0.05, 
+                                step    = 0.05,
                                 width   = '300px')
                         ),
                         shiny::column(
-                            width = 12,  
+                            width = 12,
                             shiny::HTML("<b>Click and drag to draw the box:</b><br><br>"),
                             shiny::plotOutput(
                                 outputId = "box_plot",
                                 brush = shiny::brushOpts(
-                                    id = "box_plot_brush", 
+                                    id = "box_plot_brush",
                                     delay = 1000,
                                     resetOnNew = TRUE))
                         )
@@ -107,7 +108,7 @@ gglabelr <- function(p) {
                                 label = "Copy code to clipboard")
                         ),
                         shiny::column(
-                            width = 12,  
+                            width = 12,
                             shiny::verbatimTextOutput(outputId = "code")
                         )
                     )
@@ -272,7 +273,7 @@ gglabelr <- function(p) {
     }
 
     shiny::runGadget(
-        ui, server, 
-        viewer = shiny::dialogViewer(dialogName = "gglabelr", 
+        ui, server,
+        viewer = shiny::dialogViewer(dialogName = "gglabelr",
         width = 1000, height = 750))
 }

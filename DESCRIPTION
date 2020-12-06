@@ -1,8 +1,13 @@
 Package: gglabelr
-Title: gglabelr
-Version: 0.1.0
-Authors@R: person("John", "Helveston", email = "john.helveston@gmail.com", role = c("aut", "cre"))
-Description: Interactive app to add annotations to a ggplot.
+Title: A Shiny Gadget for Interactively Annotating a ggplot.
+Version: 0.0.1
+Authors@R: c(
+    person(given   = "John",
+           family  = "Helveston",
+           role    = c("aut", "cre", "cph"),
+           email   = "john.helveston@gmail.com",
+           comment = c(ORCID = "0000-0002-2657-9191")))
+Description: A shiny gadget for interactively annotating a ggplot.
 Depends:
     R (>= 3.0.0),
 Imports:
@@ -11,6 +16,6 @@ Imports:
     rstudioapi (>= 0.4),
     clipr,
     ggplot2
-License: MIT
+License: MIT + file LICENSE
 LazyData: true
 RoxygenNote: 7.1.1

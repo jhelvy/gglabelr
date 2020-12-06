@@ -1,0 +1,11 @@
+citHeader("To cite gglabelr in publications use:")
+
+citEntry(
+  entry    = "Manual",
+  title    = "gglabelr: A Shiny Gadget for Interactively Annotating a ggplot.",
+  author   = "John Paul Helveston",
+  year     = "2020",
+  note     = "R package version 0.0.1",
+  url      = "https://jhelvy.github.io/gglabelr/",
+  textVersion = "John Paul Helveston (2020). gglabelr: A Shiny Gadget for Interactively Annotating a ggplot."
+)

@@ -6,6 +6,9 @@
 \usage{
 gglabelr(p)
 }
+\arguments{
+\item{p}{A ggplot object.}
+}
 \description{
 When called, this function opens a window with options to interactively
 annotate a ggplot. You can add a label and / or add a bounding box. You can
